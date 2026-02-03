@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "analyze_1d_rep_code"
+version = "0.1.0"
+description = "Analyzer for detector/record datasets of 1D repetition code"
+readme = "README.md"
+requires-python = ">=3.9"
+
+dependencies = [
+    "numpy",
+    "pydantic",
+    "stim",
+    "pymatching",
+    "matplotlib",
+    "tqdm",
+]
+
