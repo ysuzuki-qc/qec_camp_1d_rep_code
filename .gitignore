@@ -5,6 +5,7 @@ result/
 figure/
 correlation/
 diagram/
+record_sim/
 dump_common.py
 dump_device_noise_model.py
 dump_record_dataset.py

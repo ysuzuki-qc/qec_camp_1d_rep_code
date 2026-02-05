@@ -1,12 +1,7 @@
 import numpy as np
 import stim
 import pymatching
-from lib_1drep.data import (
-    Circuit,
-    GateType,
-    RecordDataset,
-    NoiseModel,
-)
+from lib_1drep.data import Circuit, GateType, RecordDataset, NoiseModel, NoiseType
 
 
 def _get_error_rate(
@@ -26,12 +21,14 @@ def _get_error_rate(
         float: error rates
     """
     if gate_type in [GateType.CLOCK]:
-        return 0.
+        return 0.0
     for noise_property in noise_model.noise_property_list:
         if (
             noise_property.gate_type == gate_type
             and noise_property.target_qubit_list == target_qubit_list
         ):
+            if noise_property.noise_type != NoiseType.UNIFORM_DEPOLARIZE:
+                raise ValueError(f"Unknown noise type: {noise_property.noise_type} provided")
             return noise_property.error_rate
     raise ValueError(
         f"noise information for gate_type={gate_type} target_qubit_list={target_qubit_list} not found"
@@ -78,7 +75,7 @@ def _convert_circuit_to_stim(circuit: Circuit, noise_model: NoiseModel) -> stim.
                 stim_circuit.append(
                     "DEPOLARIZE1", gate.target_qubit_list[0], error_rate / 2
                 )
-                stim_circuit.append("M", [gate.target_qubit_list[0]], error_rate/2)
+                stim_circuit.append("M", [gate.target_qubit_list[0]], error_rate / 2)
             elif gate.gate_type == GateType.IDLE_CNOT:
                 stim_circuit.append(
                     "DEPOLARIZE1", gate.target_qubit_list[0], error_rate
@@ -146,10 +143,15 @@ def sample_records(
     return dataset
 
 
+
+
 def evaluation(
-    circuit: Circuit, dataset: RecordDataset, noise_model: NoiseModel, limit_shot: int = -1
+    circuit: Circuit,
+    dataset: RecordDataset,
+    noise_model: NoiseModel,
+    limit_shot: int = -1,
 ) -> np.ndarray:
-    """Evaluate error rates for 
+    """Evaluate error rates for
 
     Args:
         circuit (Circuit): circuit

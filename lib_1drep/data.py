@@ -42,13 +42,14 @@ class RecordInformation(BaseModel):
 
 
 class GateType(Enum):
-    INIT0 = 0
-    INIT1 = 1
-    CNOT = 2
-    IDLE_CNOT = 3
-    IDLE_MEAS = 4
-    MEAS = 5
-    CLOCK = 6
+    UNKNOWN = 0
+    INIT0 = 10
+    INIT1 = 11
+    CNOT = 12
+    IDLE_CNOT = 13
+    IDLE_MEAS = 14
+    MEAS = 15
+    CLOCK = 16
 
 
 class Gate(BaseModel):
@@ -83,6 +84,14 @@ class Circuit(BaseModel):
     observable_list: list[list[RecordInformation]] = field(default_factory=list)
 
 
+class NoiseType(Enum):
+    UNKNOWN = 0
+    UNIFORM_DEPOLARIZE = 10
+    AMPLITUDE_DAMPING = 11
+    COHERENT_XX_ERROR = 12
+
+
+
 class NoiseProperty(BaseModel):
     """Noise property
 
@@ -97,6 +106,8 @@ class NoiseProperty(BaseModel):
     gate_type: GateType
     target_qubit_list: list[int]
     error_rate: float
+    noise_type: NoiseType = NoiseType.UNIFORM_DEPOLARIZE
+    error_info: dict = field(default_factory=dict)
 
     def to_json(self):
         return {"gate_type": self.gate_type.name}
