@@ -51,6 +51,11 @@ def process_noise(qulacs_circuit: qulacs.QuantumCircuit, noise_property: NoisePr
             qulacs_circuit.add_gate(qulacs.gate.PauliRotation([noise_property.target_qubit_list[1]], [1,], angle))
         else:
             raise ValueError(f"Unsupported noise: {noise_property}")
+    elif noise_property.noise_type == NoiseType.THERMALIZATION:
+        for qubit_index in noise_property.target_qubit_list:
+            qulacs_circuit.add_gate(qulacs.gate.X(qubit_index))
+            qulacs_circuit.add_gate(qulacs.gate.AmplitudeDampingNoise(qubit_index, noise_property.error_rate))
+            qulacs_circuit.add_gate(qulacs.gate.X(qubit_index))
     else:
         raise ValueError(f"Unsupported noise: {noise_property}")
 

@@ -52,7 +52,7 @@ def run(
 result_set = ResultSet(
     method_noise_model="characterization", method_sampling="experiment"
 )
-for noise_name in ["amplitude_damping", "coherent_XX", "depolarizing", "dataset_device"]:
+for noise_name in ["amplitude_damping", "coherent_XX", "depolarizing", "dataset_device", "thermalization"]:
     for code_distance in code_distance_list:
         for initial_state in initial_state_list:
             for num_round in num_round_list:
